@@ -4,10 +4,12 @@ import parse as p
 
 class MP3:
 
-    def __init__(self, filename):
-        self.filename = filename
-        self.size = os.path.getsize(filename)
-        file = open(filename, 'rb')
+    def __init__(self, path):
+        self.path = path
+        path_arr = path.split('\\')
+        self.filename = path_arr[len(path_arr) - 1]
+        self.size = os.path.getsize(path)
+        file = open(path, 'rb')
         self.track = file.read(self.size - 128)
         self.id3v1_bytes = file.read()
         self.id3v1_tags = {}
@@ -30,7 +32,7 @@ ID3V1 TAGS
   Number in album: {4}
   Year: {5}
   Genre: {6}
-  Commentary: {7}
+  Comment: {7}
 ========================='''.format(self.filename, self.id3v1_tags["artist"],
                                     self.id3v1_tags["name"],
                                     self.id3v1_tags["album"],

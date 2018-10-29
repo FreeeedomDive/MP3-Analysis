@@ -1,32 +1,13 @@
 import mp3
 import sys
 from pygame import mixer
+import wx
 
 
 class CLI:
 
     def __init__(self):
         self.file = None
-
-    def start(self):
-        mainloop = True
-        filename = ""
-        while filename == "":
-            print("Input name of MP3-file")
-            filename = input()
-            if filename[len(filename) - 4:] != ".mp3":
-                print("It is not .mp3 file!")
-                filename = ""
-            else:
-                try:
-                    self.file = mp3.MP3(filename)
-                except FileNotFoundError:
-                    print("File not found!")
-                    filename = ""
-        while mainloop:
-            print("Enter command for mp3-file")
-            command = input()
-            self.execute(command)
 
     def execute(self, command):
         if command == "exit":
@@ -44,11 +25,41 @@ class CLI:
         else:
             print("Unexpected command")
 
+    def start(self):
+        mainloop = True
+        app = wx.App(False)
+        openFileDialog = wx.FileDialog(None, "DAI MNE MP3", "", "",
+                                       "MP3 Files (*.mp3)|*.mp3")
+        openFileDialog.ShowModal()
+        path = openFileDialog.GetPath()
+        pathh = path.split('\\')
+        filename = pathh[len(pathh) - 1]
+        print(filename)
+        openFileDialog.Destroy()
+        self.file = mp3.MP3(path)
+        # path = ""
+        # while path == "":
+        #    print("Input name of MP3-file")
+        #    path = input()
+        #    if path[len(path) - 4:] != ".mp3":
+        #        print("It is not .mp3 file!")
+        #        path = ""
+        #    else:
+        #        try:
+        #            self.file = mp3.MP3(path)
+        #        except FileNotFoundError:
+        #            print("File not found!")
+        #            path = ""
+        while mainloop:
+            print("Enter command for mp3-file")
+            command = input()
+            self.execute(command)
+
     def player_control(self):
         print("PLAYER")
         print("Now playing: {0}".format(self.file.filename))
         mixer.init()
-        mixer.music.load(self.file.filename)
+        mixer.music.load(self.file.path)
         mixer.music.play()
         secondloop = True
         on_pause = False
