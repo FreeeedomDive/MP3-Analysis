@@ -30,26 +30,15 @@ class CLI:
         app = wx.App(False)
         openFileDialog = wx.FileDialog(None, "DAI MNE MP3", "", "",
                                        "MP3 Files (*.mp3)|*.mp3")
-        openFileDialog.ShowModal()
+        if openFileDialog.ShowModal() == wx.ID_CANCEL:
+            print("No selected file")
+            sys.exit(0)
         path = openFileDialog.GetPath()
         pathh = path.split('\\')
         filename = pathh[len(pathh) - 1]
         print(filename)
         openFileDialog.Destroy()
         self.file = mp3.MP3(path)
-        # path = ""
-        # while path == "":
-        #    print("Input name of MP3-file")
-        #    path = input()
-        #    if path[len(path) - 4:] != ".mp3":
-        #        print("It is not .mp3 file!")
-        #        path = ""
-        #    else:
-        #        try:
-        #            self.file = mp3.MP3(path)
-        #        except FileNotFoundError:
-        #            print("File not found!")
-        #            path = ""
         while mainloop:
             print("Enter command for mp3-file")
             command = input()
