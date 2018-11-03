@@ -17,9 +17,11 @@ class CLI:
             print("\tparse: Get tags from mp3 file")
             print("\tplay: Launch player and start playing music")
             print("\texit: Exit from program")
-        elif command == "parse":
+        elif command == "parse_id3v1":
             self.file.parse_id3v1()
             print(self.file.id3v1_string)
+        elif command == "parse_id3v2":
+            self.file.parse_id3v2()
         elif command == "play":
             self.player_control()
         else:

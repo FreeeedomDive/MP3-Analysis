@@ -13,7 +13,9 @@ class MP3:
         self.track = file.read(self.size - 128)
         self.id3v1_bytes = file.read()
         self.id3v1_tags = {}
+        self.id3v2_tags = {}
         self.id3v1_string = ""
+        self.id3v2_string = ""
         file.close()
 
     def parse_id3v1(self):
@@ -43,7 +45,7 @@ ID3V1 TAGS
 
     def parse_id3v2(self):
         # TODO
-        pass
+        self.id3v2_tags = p.Parser.parse_id3v2(self.track)
 
     def create_string_with_id3v2(self):
         # TODO

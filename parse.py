@@ -1,4 +1,5 @@
 import constants
+import utilities
 
 
 class Parser:
@@ -18,7 +19,7 @@ class Parser:
             commentary = tags[97:125].decode("UTF-8")
             number = tags[126]
             genre_number = tags[127]
-            genre = constants.genres[genre_number]
+            genre = constants.GENRES[genre_number]
         else:
             top = "NO"
             name = ""
@@ -41,3 +42,17 @@ class Parser:
             "genre_number": genre_number,
             "genre": genre
         }
+
+    @staticmethod
+    def parse_id3v2(tags):
+        tag = tags[0:3].decode("UTF-8")
+        if tag == "ID3":
+            version = tags[3]
+            sub_version = tags[4]
+            flags = tags[5]
+            length = utilities.make_length_correct(int.from_bytes(
+                tags[6:10], "big"))
+            tags = tags[10:10 + length]
+            print(len(tags))
+            print(tags)
+
