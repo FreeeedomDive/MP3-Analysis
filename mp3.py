@@ -1,5 +1,6 @@
 import os
 import parse as p
+import constants
 
 
 class MP3:
@@ -27,15 +28,14 @@ class MP3:
             return "No id3v1 tags for this mp3-file"
         return '''=========================
 ID3V1 TAGS
-  File: {0}
-  Artist: {1}
-  Name: {2}
-  Album: {3}
-  Number in album: {4}
-  Year: {5}
-  Genre: {6}
-  Comment: {7}
-========================='''.format(self.filename, self.id3v1_tags["artist"],
+  Artist: {0}
+  Name: {1}
+  Album: {2}
+  Number in album: {3}
+  Year: {4}
+  Genre: {5}
+  Comment: {6}
+========================='''.format(self.id3v1_tags["artist"],
                                     self.id3v1_tags["name"],
                                     self.id3v1_tags["album"],
                                     self.id3v1_tags["number"],
@@ -44,9 +44,26 @@ ID3V1 TAGS
                                     self.id3v1_tags["commentary"])
 
     def parse_id3v2(self):
-        # TODO
         self.id3v2_tags = p.Parser.parse_id3v2(self.track)
+        self.id3v2_string = self.create_string_with_id3v2()
 
     def create_string_with_id3v2(self):
-        # TODO
-        pass
+        if self.id3v2_tags.get("tag") is not None:
+            return "No id3v2 tags for this mp3-file"
+        tags = []
+        for tag in self.id3v2_tags:
+            temp = constants.FRAMES.get(tag)
+            if temp is not None:
+                info = temp
+            else:
+                info = "No info"
+            if tag == "APIC":
+                content = "*file contains the cover of album*"
+            else:
+                content = self.id3v2_tags[tag]
+            tags.append("  {0} - {1}: {2}".format(tag, info, content))
+        result = "=========================\nID3V2 TAGS\n"
+        for i in range(0, len(tags)):
+            result += tags[i] + "\n"
+        result += "========================="
+        return result

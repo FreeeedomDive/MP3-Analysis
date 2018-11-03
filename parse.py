@@ -45,14 +45,26 @@ class Parser:
 
     @staticmethod
     def parse_id3v2(tags):
-        tag = tags[0:3].decode("UTF-8")
-        if tag == "ID3":
-            version = tags[3]
-            sub_version = tags[4]
-            flags = tags[5]
-            length = utilities.make_length_correct(int.from_bytes(
-                tags[6:10], "big"))
-            tags = tags[10:10 + length]
-            print(len(tags))
-            print(tags)
-
+        tag = tags[0:3].decode("ISO-8859-1")
+        if tag != "ID3":
+            return {"tag": "No id3v2 tags in this file"}
+        version = tags[3]
+        sub_version = tags[4]
+        flags = tags[5]
+        length = utilities.make_length_correct(int.from_bytes(
+            tags[6:10], "big"))
+        tags = tags[10:10 + length]
+        passed = 0
+        tags_dict = {}
+        while passed < length:
+            if tags[passed:passed + 4] == b'\x00\x00\x00\x00':
+                break
+            tag_name = tags[passed:passed + 4].decode('UTF-8')
+            tag_info = constants.FRAMES.get(tag_name)
+            tag_length = int.from_bytes(tags[passed + 4:passed + 8], "big")
+            tag_flags = tags[passed + 8:passed + 10]
+            tag_content = tags[passed + 10:passed + 10 + tag_length] \
+                .decode("ISO-8859-1")
+            passed += (10 + tag_length)
+            tags_dict[tag_name] = tag_content
+        return tags_dict

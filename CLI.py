@@ -9,10 +9,37 @@ class CLI:
     def __init__(self):
         self.file = None
 
+    def start(self):
+        mainloop = True
+        path = self.choose_file()
+        self.file = mp3.MP3(path)
+        while mainloop:
+            print("Enter command for mp3-file")
+            command = input()
+            self.execute(command)
+
+    @staticmethod
+    def choose_file():
+        app = wx.App(False)
+        open_file_dialog = wx.FileDialog(None, "DAI MNE MP3", "", "",
+                                         "MP3 Files (*.mp3)|*.mp3")
+        if open_file_dialog.ShowModal() == wx.ID_CANCEL:
+            print("No selected file")
+            sys.exit(0)
+        path = open_file_dialog.GetPath()
+        pathh = path.split('\\')
+        filename = pathh[len(pathh) - 1]
+        print(filename)
+        open_file_dialog.Destroy()
+        return filename
+
     def execute(self, command):
         if command == "exit":
             sys.exit(0)
-        if command == "help":
+        elif command == "choose_file":
+            path = self.choose_file()
+            self.file = mp3.MP3(path)
+        elif command == "help":
             print("COMMANDS:")
             print("\tparse: Get tags from mp3 file")
             print("\tplay: Launch player and start playing music")
@@ -22,29 +49,11 @@ class CLI:
             print(self.file.id3v1_string)
         elif command == "parse_id3v2":
             self.file.parse_id3v2()
+            print(self.file.id3v2_string)
         elif command == "play":
             self.player_control()
         else:
             print("Unexpected command")
-
-    def start(self):
-        mainloop = True
-        app = wx.App(False)
-        openFileDialog = wx.FileDialog(None, "DAI MNE MP3", "", "",
-                                       "MP3 Files (*.mp3)|*.mp3")
-        if openFileDialog.ShowModal() == wx.ID_CANCEL:
-            print("No selected file")
-            sys.exit(0)
-        path = openFileDialog.GetPath()
-        pathh = path.split('\\')
-        filename = pathh[len(pathh) - 1]
-        print(filename)
-        openFileDialog.Destroy()
-        self.file = mp3.MP3(path)
-        while mainloop:
-            print("Enter command for mp3-file")
-            command = input()
-            self.execute(command)
 
     def player_control(self):
         print("PLAYER")
