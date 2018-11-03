@@ -1,5 +1,5 @@
 import os
-import parse as p
+import tags_parser as p
 import constants
 
 
