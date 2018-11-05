@@ -1,6 +1,7 @@
 import os
 import tags_parser as p
 import constants
+from PIL import Image
 
 
 class MP3:
@@ -17,6 +18,8 @@ class MP3:
         self.id3v2_tags = {}
         self.id3v1_string = ""
         self.id3v2_string = ""
+        self.has_album_picture = False
+        self.picture = None
         file.close()
 
     def parse_id3v1(self):
@@ -59,6 +62,9 @@ ID3V1 TAGS
                 info = "No info"
             if tag == "APIC":
                 content = "*file contains the cover of album*"
+                self.has_album_picture = True
+                self.picture = Image.frombytes('RGBA', (200, 200),
+                                               bytes(self.id3v2_tags[tag]))
             else:
                 content = self.id3v2_tags[tag]
             tags.append("  {0} - {1}: {2}".format(tag, info, content))

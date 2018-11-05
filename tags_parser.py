@@ -63,8 +63,11 @@ class Parser:
             tag_info = constants.FRAMES.get(tag_name)
             tag_length = int.from_bytes(tags[passed + 4:passed + 8], "big")
             tag_flags = tags[passed + 8:passed + 10]
-            tag_content = tags[passed + 10:passed + 10 + tag_length] \
-                .decode("ISO-8859-1")
+            if tag_name == "APIC":
+                tag_content = tags[passed + 10:passed + 10 + tag_length]
+            else:
+                tag_content = tags[passed + 10:passed + 10 + tag_length] \
+                    .decode("ISO-8859-1")
             passed += (10 + tag_length)
             tags_dict[tag_name] = tag_content
         return tags_dict

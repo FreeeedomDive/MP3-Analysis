@@ -65,6 +65,12 @@ class CLI:
         elif command == "parse_id3v2":
             self.file.parse_id3v2()
             print(self.file.id3v2_string)
+            if self.file.has_album_picture:
+                print("File contains the cover of album. "
+                      "Show it? (Y to show)")
+                answer = input()
+                if answer == "Y" or answer == "y":
+                    self.file.picture.show()
         elif command == "play":
             self.player_control()
         else:
