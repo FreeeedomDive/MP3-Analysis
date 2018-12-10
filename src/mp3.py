@@ -1,6 +1,6 @@
 import os
-import tags_parser as p
-import constants
+import src.tags_parser as p
+import src.constants as constants
 from PIL import Image
 
 
@@ -18,8 +18,10 @@ class MP3:
         self.id3v2_tags = {}
         self.id3v1_string = ""
         self.id3v2_string = ""
-        self.has_album_picture = False
+        self.contains_album_picture = False
         self.picture = None
+        self.contains_lyrics = False
+        self.lyrics = """"""
         file.close()
 
     def parse_id3v1(self):
@@ -65,6 +67,18 @@ ID3V1 TAGS
                 # self.has_album_picture = True
                 # self.picture = Image.frombytes('RGBA', (200, 200),
                 #                                bytes(self.id3v2_tags[tag]))
+            elif tag == "USLT":
+                content = "*file contains the lyrics of track*"
+                self.contains_lyrics = True
+                self.lyrics = self.id3v2_tags[tag]
+            elif tag == "TCON":
+                if self.id3v2_tags[tag] == 'RX':
+                    content = "Remix"
+                elif self.id3v2_tags[tag] == 'CR':
+                    content = 'Cover'
+                else:
+                    content = self.id3v2_tags[tag]
+
             else:
                 content = self.id3v2_tags[tag]
             tags.append("  {0} - {1}: {2}".format(tag, info, content))

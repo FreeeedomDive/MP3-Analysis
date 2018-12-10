@@ -1,4 +1,4 @@
-import mp3
+import src.mp3 as mp3
 import sys
 from pygame import mixer
 import wx
@@ -75,12 +75,18 @@ class CLI:
         elif command == "parse_id3v2":
             self.file.parse_id3v2()
             print(self.file.id3v2_string)
-            if self.file.has_album_picture:
+            if self.file.contains_album_picture:
                 print("File contains the cover of album. "
                       "Show it? (Y to show)")
                 answer = input()
                 if answer == "Y" or answer == "y":
                     self.file.picture.show()
+            if self.file.contains_lyrics:
+                print("File contains the lyrics. Show it? (Y to show)")
+                answer = input()
+                if answer == "Y" or answer == "y":
+                    print(self.file.lyrics)
+                    print("=========================")
         elif command == "play":
             self.player_control()
         else:

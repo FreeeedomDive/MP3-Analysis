@@ -1,5 +1,5 @@
-import constants
-import utilities
+import src.constants as constants
+import src.utilities as utilities
 
 
 class Parser:
