@@ -47,15 +47,25 @@ class CLI:
             print("No selected file")
             sys.exit(0)
         full_path = open_file_dialog.GetPath()
-        path = full_path.split('\\')
-        filename = path[len(path) - 1]
-        print(filename)
         open_file_dialog.Destroy()
-        return filename
+        return full_path
 
     def execute(self, command):
         if command == "exit":
             sys.exit(0)
+        elif command == "help":
+            print("Commands:")
+            time.sleep(0.3)
+            print("\tparse_id3v1: Get id3v1 tags from mp3 file")
+            time.sleep(0.3)
+            print("\tparse_id3v2: Get id3v2 tags from mp3 file")
+            time.sleep(0.3)
+            print("\tplay: Launch player and start playing music")
+            time.sleep(0.3)
+            print("\tchoose_file: Choose another file")
+            time.sleep(0.3)
+            print("\texit: Exit from program")
+            time.sleep(0.3)
         elif command == "choose_file":
             path = self.choose_file()
             self.file = mp3.MP3(path)

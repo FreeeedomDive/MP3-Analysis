@@ -62,9 +62,9 @@ ID3V1 TAGS
                 info = "No info"
             if tag == "APIC":
                 content = "*file contains the cover of album*"
-                self.has_album_picture = True
-                self.picture = Image.frombytes('RGBA', (200, 200),
-                                               bytes(self.id3v2_tags[tag]))
+                # self.has_album_picture = True
+                # self.picture = Image.frombytes('RGBA', (200, 200),
+                #                                bytes(self.id3v2_tags[tag]))
             else:
                 content = self.id3v2_tags[tag]
             tags.append("  {0} - {1}: {2}".format(tag, info, content))
