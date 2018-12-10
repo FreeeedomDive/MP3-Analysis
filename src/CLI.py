@@ -107,6 +107,7 @@ class CLI:
                 print("PLAYER:")
                 print("\tpause: Pause music")
                 print("\tunpause: Continue music")
+                print("\tset_pos: Set position of playing")
                 print("\tvolume: Change volume")
                 print("\treturn: Return to main control")
             elif command == "pause":
@@ -125,5 +126,16 @@ class CLI:
                 mixer.music.stop()
                 mixer.quit()
                 return
+            elif command == "set_pos":
+                current = mixer.music.get_pos()
+                if current == -1:
+                    print("File ended")
+                    print("Playing started again")
+                    mixer.music.load(self.file.path)
+                    mixer.music.play()
+                else:
+                    position = float(input("New position: "))
+                    mixer.music.rewind()
+                    mixer.music.set_pos(position)
             else:
                 print("Unexpected command for player")
