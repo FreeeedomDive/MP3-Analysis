@@ -74,7 +74,7 @@ ID3V1 TAGS
             elif tag == "USLT":
                 content = "*file contains the lyrics of track*"
                 self.contains_lyrics = True
-                self.lyrics = self.id3v2_tags[tag]
+                self.lyrics = "LYRICS:\n" + self.id3v2_tags[tag]
             elif tag == "TCON":
                 if self.id3v2_tags[tag] == 'RX':
                     content = "Remix"
