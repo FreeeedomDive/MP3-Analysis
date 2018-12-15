@@ -1,3 +1,4 @@
+import io
 import os
 import src.tags_parser as p
 import src.constants as constants
@@ -64,9 +65,12 @@ ID3V1 TAGS
                 info = "No info"
             if tag == "APIC":
                 content = "*file contains the cover of album*"
-                # self.has_album_picture = True
-                # self.picture = Image.frombytes('RGBA', (200, 200),
-                #                                bytes(self.id3v2_tags[tag]))
+                self.contains_album_picture = True
+                zero1 = self.id3v2_tags[tag].find(b'\x00')
+                self.id3v2_tags[tag] = self.id3v2_tags[tag][zero1 + 1:]
+                zero2 = self.id3v2_tags[tag].find(b'\x00')
+                self.id3v2_tags[tag] = self.id3v2_tags[tag][zero2 + 1:]
+                self.picture = Image.open(io.BytesIO(self.id3v2_tags[tag]))
             elif tag == "USLT":
                 content = "*file contains the lyrics of track*"
                 self.contains_lyrics = True
@@ -81,7 +85,7 @@ ID3V1 TAGS
 
             else:
                 content = self.id3v2_tags[tag]
-            tags.append("  {0} - {1}: {2}".format(tag, info, content))
+            tags.append("  {0}\t{1}:\n\t\t{2}".format(tag, info, content))
         result = "=========================\nID3V2 TAGS\n"
         for i in range(0, len(tags)):
             result += tags[i] + "\n"

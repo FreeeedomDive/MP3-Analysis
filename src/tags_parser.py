@@ -60,17 +60,27 @@ class Parser:
             if tags[passed:passed + 4] == b'\x00\x00\x00\x00':
                 break
             tag_name = tags[passed:passed + 4].decode('UTF-8')
-            tag_info = constants.FRAMES.get(tag_name)
             tag_length = int.from_bytes(tags[passed + 4:passed + 8], "big")
             tag_flags = tags[passed + 8:passed + 10]
-            shift = 0
-            if tags[passed + 10: passed + 13] == b'\x01\xff\xfe':
-                shift = 3
             if tag_name == "APIC":
-                tag_content = tags[passed + 10 + shift:passed + 10 + tag_length]
+                tag_content = tags[passed + 11:passed + 10 + tag_length]
+            elif tag_name == "USLT" or tag_name == "COMM":
+                if tags[passed+10] == 1:
+                    tag_content = tags[passed + 16:passed + 10 + tag_length] \
+                        .decode("UTF-16-le")
+                else:
+                    tag_content = tags[passed + 11:passed + 10 + tag_length] \
+                        .decode("ISO-8859-1")
             else:
-                tag_content = tags[passed + 10 + shift:passed + 10 + tag_length] \
-                    .decode("ISO-8859-1")
+                if tags[passed + 10: passed + 13] == b'\x01\xff\xfe':
+                    tag_content = tags[passed + 13:passed + 10 + tag_length] \
+                        .decode("UTF-16-le")
+                elif tags[passed + 10: passed + 13] == b'\x01\xfe\xff':
+                    tag_content = tags[passed + 13:passed + 10 + tag_length] \
+                        .decode("UTF-16-be")
+                else:
+                    tag_content = tags[passed + 10:passed + 10 + tag_length] \
+                        .decode("ISO-8859-1")
             passed += (10 + tag_length)
             tags_dict[tag_name] = tag_content
         return tags_dict
