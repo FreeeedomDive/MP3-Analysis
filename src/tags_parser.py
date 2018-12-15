@@ -44,16 +44,25 @@ class Parser:
         }
 
     @staticmethod
-    def parse_id3v2(tags):
-        tag = tags[0:3].decode("ISO-8859-1")
+    def get_tags_length(file):
+        tag = file[0:3].decode("ISO-8859-1")
+        if tag != "ID3":
+            return 0
+        length = utilities.make_length_correct(int.from_bytes(
+            file[6:10], "big"))
+        return 10 + length
+
+    @staticmethod
+    def parse_id3v2(file):
+        tag = file[0:3].decode("ISO-8859-1")
         if tag != "ID3":
             return {"tag": "No id3v2 tags in this file"}
-        version = tags[3]
-        sub_version = tags[4]
-        flags = tags[5]
+        version = file[3]
+        sub_version = file[4]
+        flags = file[5]
         length = utilities.make_length_correct(int.from_bytes(
-            tags[6:10], "big"))
-        tags = tags[10:10 + length]
+            file[6:10], "big"))
+        tags = file[10:10 + length]
         passed = 0
         tags_dict = {}
         while passed < length:
@@ -65,7 +74,7 @@ class Parser:
             if tag_name == "APIC":
                 tag_content = tags[passed + 11:passed + 10 + tag_length]
             elif tag_name == "USLT" or tag_name == "COMM":
-                if tags[passed+10] == 1:
+                if tags[passed + 10] == 1:
                     tag_content = tags[passed + 16:passed + 10 + tag_length] \
                         .decode("UTF-16-le")
                 else:

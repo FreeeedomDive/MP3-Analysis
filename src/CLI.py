@@ -41,7 +41,7 @@ class CLI:
     @staticmethod
     def choose_file():
         app = wx.App(False)
-        open_file_dialog = wx.FileDialog(None, "DAI MNE MP3", "", "",
+        open_file_dialog = wx.FileDialog(None, "DAI MNE MP3", ".", ".",
                                          "MP3 Files (*.mp3)|*.mp3")
         if open_file_dialog.ShowModal() == wx.ID_CANCEL:
             print("No selected file")
@@ -70,10 +70,8 @@ class CLI:
             path = self.choose_file()
             self.file = mp3.MP3(path)
         elif command == "parse_id3v1":
-            self.file.parse_id3v1()
             print(self.file.id3v1_string)
         elif command == "parse_id3v2":
-            self.file.parse_id3v2()
             print(self.file.id3v2_string)
             if self.file.contains_album_picture:
                 print("File contains the cover of album. "

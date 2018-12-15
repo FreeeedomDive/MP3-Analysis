@@ -21,14 +21,8 @@ def make_length_correct(length):
     bin_str = dec_to_bin(length)
     if len(bin_str) > 24:
         bin_str = bin_str[:23] + bin_str[24:]
-    if len(bin_str) == 24:
-        bin_str = bin_str[:23]
     if len(bin_str) > 16:
         bin_str = bin_str[:15] + bin_str[16:]
-    if len(bin_str) == 16:
-        bin_str = bin_str[:15]
     if len(bin_str) > 8:
         bin_str = bin_str[:7] + bin_str[8:]
-    if len(bin_str) == 8:
-        bin_str = bin_str[:7]
     return int(bin_to_dec(bin_str))

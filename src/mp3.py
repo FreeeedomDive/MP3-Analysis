@@ -15,19 +15,25 @@ class MP3:
         file = open(path, 'rb')
         self.track = file.read(self.size - 128)
         self.id3v1_bytes = file.read()
-        self.id3v1_tags = {}
-        self.id3v2_tags = {}
-        self.id3v1_string = ""
-        self.id3v2_string = ""
+        self.id3v1_tags = p.Parser.parse_id3v1(self.id3v1_bytes)
+        self.id3v1_string = self.create_string_with_id3v1()
+        id3v2_size = p.Parser.get_tags_length(self.track)
+        if id3v2_size != 0:
+            self.id3v2_bytes = self.track[0:id3v2_size]
+            self.content = self.track[id3v2_size:]
+        else:
+            self.content = self.track
         self.contains_album_picture = False
         self.picture = None
         self.contains_lyrics = False
         self.lyrics = """"""
+        if id3v2_size != 0:
+            self.id3v2_tags = p.Parser.parse_id3v2(self.id3v2_bytes)
+            self.id3v2_string = self.create_string_with_id3v2()
+        else:
+            self.id3v2_tags = {}
+            self.id3v2_string = "No id3v2 tags for this mp3-file"
         file.close()
-
-    def parse_id3v1(self):
-        self.id3v1_tags = p.Parser.parse_id3v1(self.id3v1_bytes)
-        self.id3v1_string = self.create_string_with_id3v1()
 
     def create_string_with_id3v1(self):
         if self.id3v1_tags["top"] == "NO":
@@ -48,10 +54,6 @@ ID3V1 TAGS
                                     self.id3v1_tags["year"],
                                     self.id3v1_tags["genre"],
                                     self.id3v1_tags["commentary"])
-
-    def parse_id3v2(self):
-        self.id3v2_tags = p.Parser.parse_id3v2(self.track)
-        self.id3v2_string = self.create_string_with_id3v2()
 
     def create_string_with_id3v2(self):
         if self.id3v2_tags.get("tag") is not None:
