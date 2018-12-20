@@ -85,6 +85,11 @@ class CLI:
                 if answer == "Y" or answer == "y":
                     print(self.file.lyrics)
                     print("=========================")
+        elif command == "parse_frames":
+            print("It may take a long time")
+            print("Processing frames...")
+            self.file.get_frames()
+            print("Done!")
         elif command == "play":
             self.player_control()
         else:

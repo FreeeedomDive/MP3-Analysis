@@ -1,5 +1,6 @@
 import src.constants as constants
 import src.utilities as utilities
+import src.frame as frame
 
 
 class Parser:
@@ -93,3 +94,13 @@ class Parser:
             passed += (10 + tag_length)
             tags_dict[tag_name] = tag_content
         return tags_dict
+
+    @staticmethod
+    def parse_frames(file):
+        frames = []
+        passed = 0
+        while passed < len(file):
+            current_frame = frame.Frame(file[passed:])
+            frames.append(current_frame)
+            passed += current_frame.frame_size
+        return frames

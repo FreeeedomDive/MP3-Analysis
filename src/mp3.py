@@ -2,6 +2,7 @@ import io
 import os
 import src.tags_parser as p
 import src.constants as constants
+import src.utilities as util
 from PIL import Image
 
 
@@ -27,6 +28,7 @@ class MP3:
         self.picture = None
         self.contains_lyrics = False
         self.lyrics = """"""
+        self.frames = []
         if id3v2_size != 0:
             self.id3v2_tags = p.Parser.parse_id3v2(self.id3v2_bytes)
             self.id3v2_string = self.create_string_with_id3v2()
@@ -34,6 +36,9 @@ class MP3:
             self.id3v2_tags = {}
             self.id3v2_string = "No id3v2 tags for this mp3-file"
         file.close()
+
+    def get_frames(self):
+        self.frames = p.Parser.parse_frames(self.content)
 
     def create_string_with_id3v1(self):
         if self.id3v1_tags["top"] == "NO":
