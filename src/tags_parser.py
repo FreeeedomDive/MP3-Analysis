@@ -1,6 +1,7 @@
 import src.constants as constants
 import src.utilities as utilities
 import src.frame as frame
+import numpy as np
 
 
 class Parser:
@@ -104,3 +105,17 @@ class Parser:
             frames.append(current_frame)
             passed += current_frame.frame_size
         return frames
+
+    @staticmethod
+    def get_all_audio_data(frames):
+        with open("debug.txt", 'w') as file:
+            all_raw_data = b""
+            for frame in frames:
+                file.write(str(frame.padding) + " " + str(frame.frame_size) +
+                           " " + str(frame.frame) + "\n")
+                all_raw_data += frame.frame
+        channels_number = frames[0].num_channels
+        samples = np.fromstring(all_raw_data, dtype=int)
+        channels = [samples[channel_index::channels_number] for channel_index
+                    in range(channels_number)]
+        return channels

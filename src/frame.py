@@ -17,6 +17,7 @@ class Frame:
         self.padding = frame_header[22]
         self.private = frame_header[23]
         self.channel = frame_header[24:26]
+        self.num_channels = 1 if self.channel == "11" else 2
         self.extension = frame_header[26:28]
         self.copyright = frame_header[28]
         self.original = frame_header[29]
@@ -24,3 +25,19 @@ class Frame:
         self.frame_size = int(
             (144 * self.bitrate * 1000) / self.sample_rate) + int(self.padding)
         self.frame = total_content[4:self.frame_size]
+
+    def get_all_info(self):
+        string = self.mpeg_index
+        string += "\n" + self.layer_index
+        string += "\n" + self.protection
+        string += "\n" + str(self.bitrate)
+        string += "\n" + str(self.sample_rate)
+        string += "\n" + self.padding
+        string += "\n" + self.private
+        string += "\n" + str(self.num_channels)
+        string += "\n" + self.extension
+        string += "\n" + self.copyright
+        string += "\n" + self.original
+        string += "\n" + self.emphasis
+        string += "\n" + str(self.frame_size)
+        return string

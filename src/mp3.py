@@ -2,7 +2,6 @@ import io
 import os
 import src.tags_parser as p
 import src.constants as constants
-import src.utilities as util
 from PIL import Image
 
 
@@ -39,6 +38,9 @@ class MP3:
 
     def get_frames(self):
         self.frames = p.Parser.parse_frames(self.content)
+
+    def get_audio_data(self):
+        return p.Parser.get_all_audio_data(self.frames)
 
     def create_string_with_id3v1(self):
         if self.id3v1_tags["top"] == "NO":
